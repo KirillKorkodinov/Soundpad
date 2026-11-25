@@ -15,6 +15,7 @@ from ui_file import Ui_MainWindow # Загружаем интерфейс из �
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
+        self.setWindowIcon(QIcon("Icons/soundPadIcon.ico"))
 
         self.player = QMediaPlayer() # Инициализация медиа плеера
         self.output = QAudioOutput()
@@ -23,8 +24,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.last_volume = 0
         self.muted = False
         self.counter_value = 0
-        self.devices = QMediaDevices.audioOutputs()
         self.wait_key = False
+        self.media_devices = QMediaDevices()
 
         self.setupUi(self)
 
@@ -73,6 +74,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.deleteKey.triggered.connect(self.DeleteKey)
         self.repeat_current.stateChanged.connect(self.repeat_cur)
         self.repeat_list.stateChanged.connect(self.repeat_next)
+        self.media_devices.audioOutputsChanged.connect(self.getDevices)
 
     def connectDB(self):
         '''Подключаем базу данных и считываем все звуки из нее'''
@@ -228,8 +230,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.counter.setText(str(self.counter_value))
 
     def getDevices(self):
-        for i, device in enumerate(self.devices):
+        self.reproduction_device.blockSignals(True)
+        self.reproduction_device.clear()
+        for i, device in enumerate(self.media_devices.audioOutputs()):
             self.reproduction_device.addItem(device.description(), device)
+        self.reproduction_device.blockSignals(False)
+        self.changeDevice(self.reproduction_device.currentIndex())
 
     def changeDevice(self, index): # Функция принимает индекс элемента в комбобоксе
         self.output.setDevice(self.reproduction_device.itemData(index))

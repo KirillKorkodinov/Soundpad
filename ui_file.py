@@ -167,7 +167,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Soundpad"))
         self.volume.setText(_translate("MainWindow", "100%"))
         self.counterLabel.setText(_translate("MainWindow", "Счетчик:"))
         item = self.tableWidget.horizontalHeaderItem(0)
